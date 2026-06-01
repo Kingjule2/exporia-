@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -14,6 +15,11 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+
+    public function __construct(
+        protected CartService $cartService
+    ) {
+    }
 
     /**
      * Determine the current asset version.
@@ -35,10 +41,15 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn () => [
+            'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'success' => session('success'),
+            'error' => session('error'),
+            'totalPrice' => $this->cartService->getTotalPrice(),
+            'totalQuantity' => $this->cartService->getCartItemsQuantity(),
+            'miniCartitems' => $this->cartService->getCartItems()
         ];
     }
 }

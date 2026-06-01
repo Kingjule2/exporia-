@@ -10,7 +10,7 @@ export default function PrimaryButton({
         <button
             {...props}
             className={
-                `btn btn-primary ` + className
+                `btn bg-blue-600 hover:bg-blue-700 border-none text-white ` + className
             }
             disabled={disabled}
         >

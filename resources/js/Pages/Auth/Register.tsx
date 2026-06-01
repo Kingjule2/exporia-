@@ -26,7 +26,7 @@ export default function Register() {
     return (
         <AuthenticatedLayout>
             <Head title="Register" />
-            <div className="p-8"><div className="card bg-base-100 shadow">
+            <div className="p-8"><div className="card bg-base-100 shadow max-w-[420px] mx-auto">
                 <div className="card-body"><form onSubmit={submit}>
                     <div>
                         <InputLabel htmlFor="name" value="Name" />
