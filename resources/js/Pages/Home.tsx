@@ -3,12 +3,28 @@ import { PageProps, Product, PaginationProps } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 import ProductItem from "@/Components/App/ProductItem";
+import TopNav from '@/Pages/Home/components/TopNav';
+import HeroSection from '@/Pages/Home/components/HeroSection';
+import AuthChoiceCards from '@/Pages/Home/components/AuthChoiceCards';
+import TrustStrip from '@/Pages/Home/components/TrustStrip';
+import HowItWorks from '@/Pages/Home/components/HowItWorks';
+import FeatureGrid from '@/Pages/Home/components/FeatureGrid';
+import CommodityHighlights from '@/Pages/Home/components/CommodityHighlights';
+import GuestFooter from '@/Pages/Home/components/GuestFooter';
 
 interface Props extends PageProps {
     products: PaginationProps<Product>;
     departemens: Array<{ id: number; name: string }>;
     filters: { search?: string; departemen_id?: string };
 }
+
+/**
+ * Deskripsi singkat platform untuk bagian hero Guest_View (1–300 karakter).
+ * Di-hardcode sebagai konstanta in-file (Bahasa Indonesia); bukan props dan
+ * bukan data backend, sehingga kontrak props `Home.tsx` tetap utuh (Req 5.1, 6.11).
+ */
+const HERO_DESCRIPTION =
+    'Exporia mempertemukan produsen lokal pilihan dengan importir internasional secara langsung, aman, dan efisien. Hubungkan bisnis Anda ke ekosistem pasar global ekspor-impor sekarang.';
 
 export default function Home({ products, departemens = [], filters = {}, auth }: Props) {
     const user = auth?.user;
@@ -42,92 +58,31 @@ export default function Home({ products, departemens = [], filters = {}, auth }:
     // ==========================================
     if (!user) {
         return (
-            <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between font-sans relative overflow-hidden">
-                {/* Visual Glow Orbs */}
-                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[140px] translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+            <div className="relative min-h-screen overflow-hidden bg-surface font-sans text-ink">
+                <Head title="Exporia — Gerbang Dagang Ekspor-Impor Indonesia" />
 
-                <Head title="Welcome to Exporia - Indonesia B2B Gateway" />
+                <div className="relative z-10 flex min-h-screen flex-col">
+                    {/* Navbar atas: simpel & modern */}
+                    <TopNav />
 
-                {/* Top Simple Header */}
-                <header className="max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between border-b border-white/5 relative z-10">
-                    <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-blue-400 via-indigo-400 to-indigo-500 bg-clip-text text-transparent">
-                        Exporia
-                    </span>
-                    <span className="text-xs text-gray-500 font-bold tracking-widest uppercase hidden sm:inline-block">
-                        INDONESIAN B2B EXPORT GATEWAY
-                    </span>
-                </header>
+                    <main className="flex-1">
+                        {/* Hero full-width dengan latar foto laut */}
+                        <HeroSection description={HERO_DESCRIPTION} />
 
-                {/* Welcome Selection Body */}
-                <main className="max-w-7xl mx-auto w-full px-6 py-12 flex flex-col items-center justify-center flex-1 relative z-10 text-center">
-                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-8 uppercase tracking-widest animate-pulse">
-                        Eksportir & Importir Terkoneksi
-                    </span>
+                        {/* Kartu pilihan autentikasi */}
+                        <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                            <AuthChoiceCards />
+                        </section>
 
-                    <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight max-w-4xl">
-                        Gerbang Utama Ekspor <br/>
-                        <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-indigo-500 bg-clip-text text-transparent">
-                            B2B Terbaik di Indonesia
-                        </span>
-                    </h1>
+                        {/* Konten Informatif */}
+                        <TrustStrip />
+                        <HowItWorks />
+                        <FeatureGrid />
+                        <CommodityHighlights />
+                    </main>
 
-                    <p className="text-gray-400 text-sm sm:text-base lg:text-lg mb-14 max-w-2xl font-medium leading-relaxed">
-                        Exporia mempertemukan produsen lokal pilihan dengan importir internasional secara langsung, aman, dan efisien. Hubungkan bisnis Anda dengan ekosistem pasar global sekarang.
-                    </p>
-
-                    {/* Login vs SignUp Choice Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-3xl">
-                        {/* Option 1: Login */}
-                        <div className="group bg-white/[0.03] backdrop-blur-md border border-white/5 hover:border-blue-500/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 text-left flex flex-col justify-between h-[260px] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/15 transition-all"></div>
-                            <div>
-                                <div className="p-3.5 bg-blue-500/10 text-blue-400 rounded-2xl w-fit mb-6">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Masuk ke Akun</h3>
-                                <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                                    Sudah memiliki akun terdaftar? Masuk untuk mengelola transaksi B2B Anda sekarang.
-                                </p>
-                            </div>
-                            <Link
-                                href={route('login')}
-                                className="inline-flex items-center justify-center w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/25"
-                            >
-                                Masuk Akun
-                            </Link>
-                        </div>
-
-                        {/* Option 2: Register */}
-                        <div className="group bg-white/[0.03] backdrop-blur-md border border-white/5 hover:border-indigo-500/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/5 text-left flex flex-col justify-between h-[260px] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/15 transition-all"></div>
-                            <div>
-                                <div className="p-3.5 bg-indigo-500/10 text-indigo-400 rounded-2xl w-fit mb-6">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Daftar Akun Baru</h3>
-                                <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                                    Baru di Exporia? Daftarkan profil perusahaan atau diri Anda secara gratis dalam 2 menit.
-                                </p>
-                            </div>
-                            <Link
-                                href={route('register')}
-                                className="inline-flex items-center justify-center w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/10 font-bold text-sm transition-all"
-                            >
-                                Buat Akun Baru
-                            </Link>
-                        </div>
-                    </div>
-                </main>
-
-                {/* Footer simple */}
-                <footer className="max-w-7xl mx-auto w-full px-6 py-6 text-center text-xs text-gray-600 relative z-10 border-t border-white/5">
-                    &copy; {new Date().getFullYear()} Exporia B2B Portal. All rights reserved.
-                </footer>
+                    <GuestFooter />
+                </div>
             </div>
         );
     }

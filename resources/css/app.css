@@ -1,3 +1,137 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Smooth-scroll untuk tautan anchor navbar (Cara Kerja, Fitur, Sorotan Komoditas) */
+html {
+    scroll-behavior: smooth;
+}
+
+/*
+ * Bentuk lambung kapal kontainer untuk navbar Guest_View (GuestHeader).
+ * Lambung (hull) berupa trapesium terbalik: dek atas lebar & lurus untuk
+ * menumpuk "peti kontainer", lalu menyempit ke bawah dengan haluan (kanan)
+ * dan buritan (kiri) yang miring sehingga menyerupai badan kapal yang
+ * mengapung. Hanya properti visual; tidak memengaruhi aliran tata letak.
+ */
+.ship-hull {
+    border-radius: 0.5rem 0.5rem 0 0;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 55%, 93% 100%, 7% 100%, 0 55%);
+    clip-path: polygon(0 0, 100% 0, 100% 55%, 93% 100%, 7% 100%, 0 55%);
+}
+
+/*
+ * Efek peti kontainer 3D: korugasi vertikal (garis-garis bayangan) pada
+ * permukaan peti, dibuat dengan repeating-linear-gradient. Diterapkan via
+ * kelas .container-box agar setiap tautan navigasi tampak seperti peti baja.
+ */
+.container-box {
+    background-image: repeating-linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.14) 0,
+        rgba(0, 0, 0, 0.14) 1px,
+        transparent 1px,
+        transparent 9px
+    );
+    background-blend-mode: multiply;
+}
+
+/*
+ * Panel kaca backlit pada wajah peti kontainer (ShipNav).
+ * Memberi kilau halus di tepi atas agar menyerupai panel premium backlit.
+ */
+.container-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0) 45%
+    );
+    pointer-events: none;
+}
+
+/*
+ * Plat navigasi 3D yang "dibaut" ke wajah peti kontainer (ShipNav).
+ * Memberi kesan plat logam timbul: bevel terang di tepi atas-kiri, bayangan
+ * gelap di tepi bawah-kanan, plus drop-shadow agar tampak menonjol dari
+ * permukaan kontainer. Empat "baut" di sudut ditambahkan via pseudo-element
+ * dengan radial-gradient.
+ */
+.nav-plate {
+    background-image:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 38%),
+        linear-gradient(to bottom, rgba(11, 110, 153, 0.35), rgba(10, 61, 98, 0.85));
+    box-shadow:
+        /* bevel dalam: highlight atas + bayangan bawah */
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.55),
+        inset 1.5px 0 0 rgba(255, 255, 255, 0.18),
+        inset -1.5px 0 0 rgba(0, 0, 0, 0.35),
+        /* elevasi plat dari permukaan kontainer */
+        0 6px 10px rgba(0, 0, 0, 0.45),
+        0 2px 3px rgba(0, 0, 0, 0.35);
+    transform-style: preserve-3d;
+}
+
+/* Empat baut/rivet di sudut plat */
+.nav-plate::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 3px 3px, rgba(255, 255, 255, 0.6) 0, rgba(0, 0, 0, 0.5) 1.6px, transparent 2.4px),
+        radial-gradient(circle at calc(100% - 3px) 3px, rgba(255, 255, 255, 0.6) 0, rgba(0, 0, 0, 0.5) 1.6px, transparent 2.4px),
+        radial-gradient(circle at 3px calc(100% - 3px), rgba(255, 255, 255, 0.6) 0, rgba(0, 0, 0, 0.5) 1.6px, transparent 2.4px),
+        radial-gradient(circle at calc(100% - 3px) calc(100% - 3px), rgba(255, 255, 255, 0.6) 0, rgba(0, 0, 0, 0.5) 1.6px, transparent 2.4px);
+    background-repeat: no-repeat;
+}
+
+/* Plat aktif (Lacak Kiriman): backlit biru neon */
+.nav-plate--active {
+    background-image:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 40%),
+        linear-gradient(to bottom, rgba(56, 214, 255, 0.45), rgba(11, 110, 153, 0.9));
+    box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+        0 0 22px rgba(56, 214, 255, 0.8),
+        0 6px 12px rgba(0, 0, 0, 0.45);
+}
+
+/*
+ * Reduced motion global (Req 4.5, 4.6, 6.10)
+ * Pengguna_Reduced_Motion: nonaktifkan animasi non-esensial (rise, wave, drift)
+ * dan transisi non-esensial, tampilkan elemen langsung di keadaan akhir tanpa gerak.
+ */
+@media (prefers-reduced-motion: reduce) {
+    /*
+     * Matikan animasi kemunculan & latar berulang (rise, wave, drift).
+     * Keadaan akhir animasi `rise` (opacity 1, translateY 0) identik dengan
+     * posisi natural elemen, sehingga tidak terjadi layout shift (Req 4.6).
+     */
+    .animate-rise,
+    .animate-wave,
+    .animate-drift {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    /*
+     * Nonaktifkan transisi & animasi non-esensial secara global agar konten
+     * tampil langsung di keadaan akhir tanpa gerak (Req 4.5, 6.10).
+     */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
